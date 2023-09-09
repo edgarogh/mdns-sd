@@ -1625,6 +1625,8 @@ fn check_service_name_length(ty_domain: &str, limit: u8) -> Result<()> {
 fn check_service_name(mut fullname: &str) -> Result<()> {
     if fullname.ends_with("._tcp.local.") || fullname.ends_with("._udp.local.") {
         fullname = &fullname[..fullname.len() - DOMAIN_LEN];
+    } else {
+        fullname = &fullname[..fullname.len() - 1];
     }
 
     let remaining: Vec<&str> = fullname.split('.').collect();
