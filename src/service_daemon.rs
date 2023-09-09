@@ -1622,15 +1622,12 @@ fn check_service_name_length(ty_domain: &str, limit: u8) -> Result<()> {
 ///
 /// Note: this function does not check for the length of the service name.
 /// Instead `register_service` method will check the length.
-fn check_service_name(fullname: &str) -> Result<()> {
-    if !(fullname.ends_with("._tcp.local.") || fullname.ends_with("._udp.local.")) {
-        return Err(e_fmt!(
-            "Service {} must end with '._tcp.local.' or '._udp.local.'",
-            fullname
-        ));
+fn check_service_name(mut fullname: &str) -> Result<()> {
+    if fullname.ends_with("._tcp.local.") || fullname.ends_with("._udp.local.") {
+        fullname = &fullname[..fullname.len() - DOMAIN_LEN];
     }
 
-    let remaining: Vec<&str> = fullname[..fullname.len() - DOMAIN_LEN].split('.').collect();
+    let remaining: Vec<&str> = fullname.split('.').collect();
     let name = remaining.last().ok_or_else(|| e_fmt!("No service name"))?;
 
     if &name[0..1] != "_" {
